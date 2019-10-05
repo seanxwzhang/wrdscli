@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import yaml
 import traceback
 import sys
 import errno
 from os import path, walk, makedirs
 from sqlalchemy import create_engine
+from yaml import safe_load
 
 LOG_FORMAT = "%(asctime)s [%(filename)s] [%(levelname)s]: %(message)s"
 
@@ -19,7 +19,7 @@ def load_config():
     for root, _, configs in walk(config_path):
         for config in configs:
             with open(path.join(root, config)) as f:
-                res.update(yaml.safe_load(f))
+                res.update(safe_load(f))
     return res
 
 def get_wrds_engine():

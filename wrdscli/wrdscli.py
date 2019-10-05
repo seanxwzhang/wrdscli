@@ -7,20 +7,26 @@ import traceback
 import time
 import asyncio
 import concurrent.futures
+from configparser import ConfigParser
 from os import getenv
+from os.path import abspath
 from importlib import import_module, reload
-from wrdscli.common import get_wrds_engine, AsyncSafeRun, LOG_FORMAT
+from common import get_wrds_engine, AsyncSafeRun
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.schema import Index, Table
-        
+from db.commands import db
+
+LOG_FORMAT = "%(asctime)s [%(filename)s] [%(levelname)s]: %(message)s"
 logging.shutdown()
 reload(logging)
 logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger('wrdscli.db')
+logger = logging.getLogger('wrdscli')
+
 
 @AsyncSafeRun(logger)
-async def _create_index(meta: MetaData, engine: Engine, table: Table, column: str):
+async def _create_index(meta: MetaData, engine: Engine, table: Table,
+                        column: str):
     logger.info(f'Creating index on {table.schema}.{table.name}')
     ts = time.time()
     idx_name = f'{table.name}_{column}_idx'
@@ -30,6 +36,7 @@ async def _create_index(meta: MetaData, engine: Engine, table: Table, column: st
         await loop.run_in_executor(executor, lambda: index.create(bind=engine))
     te = time.time()
     logger.info(f'Index {idx_name} created after {(te - ts):.2f} seconds')
+
 
 @AsyncSafeRun(logger)
 async def _create_indices(schema, tables, column):
@@ -42,32 +49,43 @@ async def _create_indices(schema, tables, column):
     for table in meta.tables.values():
         if not tables or table.name in tables:
             indices = insp.get_indexes(table.name, schema=schema)
-            idx_columns = {name for names in [index['column_names'] for index in indices] for name in names}
-            if not indices or (column in table.columns.keys() and column not in idx_columns):
+            idx_columns = {name for names in [
+                index['column_names'] for index in indices] for name in names}
+            if not indices or (column in table.columns.keys()
+                               and column not in idx_columns):
                 tasks.append(_create_index(meta, engine, table, column))
             elif column not in table.columns.keys():
-                logger.info(f'{schema}.{table} doesn\'t have column {column}, skipping')
+                logger.info(
+                    '{schema}.{table} doesn\'t have column {column}, '
+                    f'skipping')
                 skipped += 1
             elif column in idx_columns:
-                logger.info(f'Index on {column} already present in {schema}.{table}, skipping')
+                logger.info(
+                    'Index on {column} already present in {schema}.{table}, '
+                    f'skipping')
                 skipped += 1
     if tasks:
         results = await asyncio.gather(*tasks)
         failure = sum(results)
         success = len(results) - failure
-    logger.info(f'Schema {schema} has {total} tables, created {success} indices, failed {failure} tables, skipped {skipped} tables, checked {len(tables)} tables.')
-        
+    logger.info(
+        'Schema {schema} has {total} tables, created {success} indices,'
+        ' failed {failure} tables, skipped {skipped} tables, checked '
+        f'{len(tables)} tables.')
 
 
-@click.group('db')
+@click.group()
+@click.option('--debug/--no-debug', default=False)
+@click.option('--config_path', default=abspath('.config/default.ini'))
 @click.pass_context
-def db(ctx):
-    pass
+def wrdscli(ctx, debug, config_path):
+    ctx.ensure_object(dict)
+    logger.setLevel('DEBUG' if debug else 'INFO')
+    ctx.obj['DEBUG'] = debug
+    config = ConfigParser(config_path)
 
-@db.command()
-@click.pass_context
-@click.argument('schema')
-@click.option('-t', '--table', multiple=True)
-@click.option('-k', '--column', default='gvkey')
-def create_index(ctx, schema, table, column):
-    asyncio.run(_create_indices(schema, table, column))
+
+wrdscli.add_command(db)
+
+if __name__ == '__main__':
+    wrdscli()

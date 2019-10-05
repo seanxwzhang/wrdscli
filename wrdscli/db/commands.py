@@ -9,17 +9,15 @@ import asyncio
 import concurrent.futures
 from os import getenv
 from importlib import import_module, reload
-from wrdscli.common import get_wrds_engine, AsyncSafeRun
+from wrdscli.common import get_wrds_engine, AsyncSafeRun, LOG_FORMAT
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.schema import Index, Table
-from wrdscli.db.commands import db
         
-LOG_FORMAT = "%(asctime)s [%(filename)s] [%(levelname)s]: %(message)s"
 logging.shutdown()
 reload(logging)
 logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger('wrdscli')
+logger = logging.getLogger('wrdscli.db')
 
 @AsyncSafeRun(logger)
 async def _create_index(meta: MetaData, engine: Engine, table: Table, column: str):
@@ -60,15 +58,15 @@ async def _create_indices(schema, tables, column):
     logger.info(f'Schema {schema} has {total} tables, created {success} indices, failed {failure} tables, skipped {skipped} tables, checked {len(tables)} tables.')
         
 
-@click.group()
-@click.option('--debug/--no-debug', default=False)
+@click.group('db')
 @click.pass_context
-def wrdscli(ctx, debug):
-    ctx.ensure_object(dict)
-    logger.setLevel('DEBUG' if debug else 'INFO')
-    ctx.obj['DEBUG'] = debug
+def db(ctx):
+    pass
 
-wrdscli.add_command(db)
-
-if __name__ == '__main__':
-    wrdscli()
+@db.command()
+@click.pass_context
+@click.argument('schema')
+@click.option('-t', '--table', multiple=True)
+@click.option('-k', '--column', default='gvkey')
+def create_index(ctx, schema, table, column):
+    asyncio.run(_create_indices(schema, table, column))
