@@ -8,10 +8,10 @@ setup(
     author_email='seanxwzhang@gmail.com',
     packages=find_packages(),
     install_requires=[
-        'sqlalchemy>=1.3', 
+        'sqlalchemy>=1.3',
         'click>=7.0',
         'psycopg2>=2.7.6',
-        ],
+    ],
     python_requires='>=3.7.4',
     entry_points='''
         [console_scripts]
