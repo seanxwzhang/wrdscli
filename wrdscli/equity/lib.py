@@ -17,23 +17,3 @@ from sqlalchemy.schema import Index, Table
 from wrdscli.equity.company import Company
 from wrdscli.equity.security import Security
 from typing import List
-
-logging.shutdown()
-reload(logging)
-logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger('wrdscli.equity')
-
-
-@attr.s(auto_attribs=True)
-class Equity:
-    company: Company
-    securities: List[Security] = []
-
-
-
-class EquityLocator(object):
-    def __init__(self, ticker):
-        self.engine = get_wrds_engine()
-    
-    def locate_by_tic(self, tic):
-        

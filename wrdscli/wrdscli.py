@@ -7,23 +7,16 @@ import traceback
 import time
 import asyncio
 import concurrent.futures
-from configparser import ConfigParser
 from os import getenv
 from os.path import abspath
-from importlib import import_module, reload
 from wrdscli.common import get_wrds_engine, AsyncSafeRun
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.schema import Index, Table
 from wrdscli.db.commands import db
-from wrdscli.lib.base import LOG_FORMAT
+from wrdscli.common import get_logger
 
-
-logging.shutdown()
-reload(logging)
-logging.basicConfig(format=LOG_FORMAT)
-logger = logging.getLogger('wrdscli')
-
+logger = get_logger('wrdscli')
 
 @AsyncSafeRun(logger)
 async def _create_index(meta: MetaData, engine: Engine, table: Table,

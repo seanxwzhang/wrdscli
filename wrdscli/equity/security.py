@@ -5,6 +5,8 @@ from wrdscli.lib.base import WRDSEntity
 
 @attr.s(auto_attribs=True)
 class Security(WRDSEntity):
+    schema = 'comp'
+    table = 'security'
     iid: str  # Issue ID
     gvkey: str
     tic: str = ''

@@ -1,33 +1,41 @@
 #!/usr/bin/env python
 
+import logging
 import traceback
 import sys
 import errno
-from os import path, walk, makedirs
+from configparser import ConfigParser
+from importlib import reload
+from os import path, walk, makedirs, getenv
 from sqlalchemy import create_engine
-from yaml import safe_load
 
 LOG_FORMAT = "%(asctime)s [%(filename)s] [%(levelname)s]: %(message)s"
 
+def get_logger(name, level=getenv('LOG_LEVEL', 'INFO')):
+    logging.shutdown()
+    reload(logging)
+    logging.basicConfig(format=LOG_FORMAT)
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    return logger
+
 def load_config():
     '''
-    Load all configs (merge if key overlaps) into a dict
+    Load wrdscli config
     '''
     script_path = path.abspath(__file__)
-    config_path = path.realpath(path.join(script_path, '../../config'))
-    res = {}
-    for root, _, configs in walk(config_path):
-        for config in configs:
-            with open(path.join(root, config)) as f:
-                res.update(safe_load(f))
-    return res
+    config_path = path.realpath(path.join(script_path, '../config/default.ini'))
+    config = ConfigParser()
+    config.read(config_path)
+    return config
 
 def get_wrds_engine():
     config = load_config()
-    user = config['PGUSER']
-    pw = config['PGPASS']
-    host = config['PGHOST']
-    db = config['PGDATABASE']
+    section_name = 'db'
+    user = config[section_name]['PGUSER']
+    pw = config[section_name]['PGPASS']
+    host = config[section_name]['PGHOST']
+    db = config[section_name]['PGDATABASE']
     return create_engine(f'postgresql://{user}:{pw}@{host}/{db}')
 
 def open_wp(file_path):
@@ -77,3 +85,5 @@ class AsyncSafeRun(object):
                 self.logger.error(traceback.format_exception(*(sys.exc_info())))
                 return 1
         return func_wrapper
+
+engine = get_wrds_engine()

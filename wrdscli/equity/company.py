@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 import attr
+# from typing import List
+from wrdscli.lib.base import WRDSEntity
 
 @attr.s(auto_attribs=True)
-class Company:
+class Company(WRDSEntity):
+    schema = 'comp'
+    table = 'company'
     conm: str  # Company name
     gvkey: str
     add1: str = ''
@@ -15,6 +19,7 @@ class Company:
     cik: str = '' # CIK number
     city: str = ''
     conml: str = ''  # company legal name
+    county: str = ''
     costat: str = ''  # activae/inactive status marker
     dlrsn: str = ''  # delete reason
     ein: str = ''  # Employer Identification Number
@@ -42,3 +47,14 @@ class Company:
     weburl: str = ''
     dldte: str = ''  # Research Company Deletion Date
     ipodate: str = ''  # Initial Public Offering Date
+
+    @staticmethod
+    def from_name(name):
+        '''
+        Return 0 or more companies
+        '''
+        res_proxy = super(Company, Company).from_attr('conm', name.upper())
+        res = []
+        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
+            res.append(Company(**obj))
+        return res
