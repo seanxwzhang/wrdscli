@@ -58,7 +58,6 @@ async def _create_indices(schema, tables, column):
     logger.info(f'Schema {schema} has {total} tables, created {success} indices, failed {failure} tables, skipped {skipped} tables, checked {len(tables)} tables.')
         
 
-
 @click.group('db')
 @click.pass_context
 def db(ctx):

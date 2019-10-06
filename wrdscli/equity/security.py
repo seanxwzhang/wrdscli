@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import attr
+from wrdscli.lib.base import WRDSEntity
 
 @attr.s(auto_attribs=True)
-class Security:
+class Security(WRDSEntity):
     iid: str  # Issue ID
     gvkey: str
     tic: str = ''
