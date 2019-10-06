@@ -6,6 +6,6 @@ py_library(
         "commands.py"
     ],
     deps=[
-        "//:common"
+        "//wrdscli:common"
     ]
 )
