@@ -2,7 +2,10 @@
 
 import attr
 # from typing import List
+from wrdscli.common import get_logger
 from wrdscli.lib.base import WRDSEntity
+
+logger = get_logger('company')
 
 @attr.s(auto_attribs=True)
 class Company(WRDSEntity):
@@ -57,4 +60,20 @@ class Company(WRDSEntity):
         res = []
         for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
             res.append(Company(**obj))
+        if len(res) > 1:
+            logger.warning(f'name {name} matches {len(res)} companies')
         return res
+
+    @staticmethod
+    def from_gvkey(gvkey):
+        res_proxy = super(Company, Company).from_attr('gvkey', gvkey, exact=True)
+        res = []
+        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
+            res.append(Company(**obj))
+        if len(res) > 1:
+            logger.error(f'gvkey {gvkey} matches {len(res)} companies')
+            raise RuntimeError
+        if not res:
+            logger.error(f'gvkey {gvkey} doesn\'t match any companies')
+            return None
+        return res[0]

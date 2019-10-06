@@ -60,8 +60,12 @@ class WRDSEntity(ABC, Loggable):
         return res
 
     @classmethod
-    def from_attr(cls, attr, val, limit=None):
-        sql = f'SELECT * from {cls.schema}.{cls.table} WHERE {attr} LIKE \'%{val}%\''  # pylint: disable=no-member
+    def from_attr(cls, attr, val, limit=None, exact=False):
+        if exact:
+            match_op = f'= \'{val}\''
+        else:
+            match_op = f'LIKE \'%{val}%\''
+        sql = f'SELECT * from {cls.schema}.{cls.table} WHERE {attr} {match_op}'  # pylint: disable=no-member
         sql += ';' if not limit else f' LIMIT {limit};'
         return cls.execute(sql)
 
