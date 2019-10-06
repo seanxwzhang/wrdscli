@@ -11,11 +11,11 @@ from configparser import ConfigParser
 from os import getenv
 from os.path import abspath
 from importlib import import_module, reload
-from common import get_wrds_engine, AsyncSafeRun
+from wrdscli.common import get_wrds_engine, AsyncSafeRun
 from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.schema import Index, Table
-from db.commands import db
+from wrdscli.db.commands import db
 
 LOG_FORMAT = "%(asctime)s [%(filename)s] [%(levelname)s]: %(message)s"
 logging.shutdown()
@@ -76,16 +76,25 @@ async def _create_indices(schema, tables, column):
 
 @click.group()
 @click.option('--debug/--no-debug', default=False)
-@click.option('--config_path', default=abspath('.config/default.ini'))
+@click.option('--config_path', default=abspath('wrdscli/config/default.ini'))
 @click.pass_context
 def wrdscli(ctx, debug, config_path):
+    '''
+    Tool for interacting with WRDS database
+    '''
     ctx.ensure_object(dict)
     logger.setLevel('DEBUG' if debug else 'INFO')
     ctx.obj['DEBUG'] = debug
-    config = ConfigParser(config_path)
+    config = ConfigParser()
+    config.read(config_path)
+    ctx.obj['raw_config'] = config
+    ctx.obj['db'] = config['db']
 
 
 wrdscli.add_command(db)
 
+def __main__():
+    wrdscli()  # pylint: disable=no-value-for-parameter
+
 if __name__ == '__main__':
-    wrdscli()
+    __main__()

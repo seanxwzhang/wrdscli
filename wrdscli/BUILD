@@ -14,6 +14,6 @@ py_binary(
         "wrdscli.py"
     ],
     deps=[
-        "//db:db_commands"
-    ]
+        "//wrdscli/db:db_commands"
+    ],
 )
