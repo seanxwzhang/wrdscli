@@ -1,0 +1,7 @@
+[db]
+WRDS_ID = ''
+WRDS_PASS = ''
+PGHOST = ''
+PGDATABASE = ''
+PGPASS = ''
+PGUSER =  ''
