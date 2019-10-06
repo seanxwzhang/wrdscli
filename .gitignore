@@ -1,5 +1,5 @@
 __pycache__
 .vscode
-*.ini
+wrdscli/**/*.ini
 bazel-*
 *egg-info
