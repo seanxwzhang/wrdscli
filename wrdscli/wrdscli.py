@@ -16,8 +16,9 @@ from sqlalchemy import MetaData
 from sqlalchemy.engine import Engine, reflection
 from sqlalchemy.schema import Index, Table
 from wrdscli.db.commands import db
+from wrdscli.lib.base import LOG_FORMAT
 
-LOG_FORMAT = "%(asctime)s [%(filename)s] [%(levelname)s]: %(message)s"
+
 logging.shutdown()
 reload(logging)
 logging.basicConfig(format=LOG_FORMAT)
