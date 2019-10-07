@@ -60,12 +60,15 @@ class WRDSEntity(ABC, Loggable):
         return res
 
     @classmethod
-    def from_attr(cls, attr, val, limit=None, exact=False):
+    def from_attr(cls, d_cls, attr, val, limit=None, exact=False):
         if exact:
             match_op = f'= \'{val}\''
         else:
             match_op = f'LIKE \'%{val}%\''
         sql = f'SELECT * from {cls.schema}.{cls.table} WHERE {attr} {match_op}'  # pylint: disable=no-member
         sql += ';' if not limit else f' LIMIT {limit};'
-        return cls.execute(sql)
-
+        res_proxy = cls.execute(sql)
+        res = []
+        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
+            res.append(d_cls(**obj))
+        return res

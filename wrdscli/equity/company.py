@@ -56,20 +56,11 @@ class Company(WRDSEntity):
         '''
         Return 0 or more companies
         '''
-        res_proxy = super(Company, Company).from_attr('conm', name.upper())
-        res = []
-        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
-            res.append(Company(**obj))
-        if len(res) > 1:
-            logger.warning(f'name {name} matches {len(res)} companies')
-        return res
+        return super(Company, Company).from_attr(Company, 'conm', name.upper())
 
     @staticmethod
     def from_gvkey(gvkey):
-        res_proxy = super(Company, Company).from_attr('gvkey', gvkey, exact=True)
-        res = []
-        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
-            res.append(Company(**obj))
+        res = super(Company, Company).from_attr(Company, 'gvkey', gvkey, exact=True)
         if len(res) > 1:
             logger.error(f'gvkey {gvkey} matches {len(res)} companies')
             raise RuntimeError

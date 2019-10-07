@@ -28,19 +28,11 @@ class Security(WRDSEntity):
         '''
         Return 0 or more securities given gvkey
         '''
-        res_proxy = super(Security, Security).from_attr('gvkey', gvkey)
-        res = []
-        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
-            res.append(Security(**obj))
-        return res
+        return super(Security, Security).from_attr(Security, 'gvkey', gvkey)
 
     @staticmethod
     def from_tic(tic):
         '''
         Return 0 or more securities given tic
         '''
-        res_proxy = super(Security, Security).from_attr('tic', tic)
-        res = []
-        for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
-            res.append(Security(**obj))
-        return res
+        return super(Security, Security).from_attr(Security, 'tic', tic)
