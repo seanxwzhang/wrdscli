@@ -1,7 +1,9 @@
 '''
 Base Classes for WRDSCLI
 '''
+import attr
 import logging
+import pandas as pd
 from abc import ABC, abstractmethod
 from wrdscli.common import engine, LOG_FORMAT, get_logger
 from sqlalchemy import text
@@ -72,3 +74,13 @@ class WRDSEntity(ABC, Loggable):
         for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
             res.append(d_cls(**obj))
         return res
+
+
+class WRDSHelper(Loggable):
+
+    def _make_df(self, data):
+        if data:
+            cols = attr.asdict(data[0]).keys()
+            return pd.DataFrame([[getattr(i,j) for j in cols] for i in data], columns = cols)
+        else:
+            return pd.DataFrame()
