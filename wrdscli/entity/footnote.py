@@ -370,6 +370,7 @@ class FootnoteA(WRDSEntity):
     dfpac_dc : int = None  # Deferred Policy Acquisition Costs Data Code
     dfs_dc : int = None  # Debt - Finance Subsidiary Data Code
     dfxa_dc : int = None  # Depreciation of Tangible Fixed Assets Data Code
+    diladj_dc: int = None
     dlc_dc : int = None  # Debt in Current Liabilities - Total Data Code
     dlcch_dc : int = None  # Current Debt - Changes Data Code
     dltis_dc : int = None  # Long-Term Debt - Issuance Data Code
