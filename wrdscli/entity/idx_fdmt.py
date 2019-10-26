@@ -77,7 +77,7 @@ class IdxFdmtAnn(WRDSEntity):
   xacc : int = None  # Accrued Expenses - Index Fundamental
   xint : int = None  # Interest Expense - Index Fundamental
   xsga : int = None  # Selling, General, and Administrative Expenses - Index Fundamental
-  datadate : int = None  # Data Date - Index Annual
+  datadate : str = None  # Data Date - Index Annual
 
 
   @staticmethod
@@ -149,7 +149,7 @@ class IdxFdmtQrt(WRDSEntity):
   txtq : int = None  # Income Taxes - Total - Index Fundamental - Quarterly
   xintq : int = None  # Interest Expense - Index Fundamental - Quarterly
   xsgaq : int = None  # Selling, General, and Administrative Expenses - Index Fundamental - Quarterly
-  datadate : int = None  # Data Date - Index Quarterly
+  datadate : str = None  # Data Date - Index Quarterly
 
   @staticmethod
   def from_gvkeyx(gvkeyx):
@@ -180,7 +180,7 @@ class IdxMth(WRDSEntity):
   prccmusd : int = None  # Index Price - Close Monthly - US Dollars
   prchm : int = None  # Index Price - High Monthly
   prclm : int = None  # Index Price - Low Monthly
-  datadate : int = None  # Data Date - Index Monthly
+  datadate : str = None  # Data Date - Index Monthly
 
   @staticmethod
   def from_gvkeyx(gvkeyx):
@@ -200,7 +200,7 @@ class IdxDaily(WRDSEntity):
   prccddivn : int = None  # Index Value - Total Return - Net Dividends
   prchd : int = None  # Index Price - High Daily
   prcld : int = None  # Index Price - Low Daily
-  datadate : int = None  # Data Date - Index Daily
+  datadate : str = None  # Data Date - Index Daily
 
   @staticmethod
   def from_gvkeyx(gvkeyx):

@@ -33,7 +33,7 @@ class Index(WRDSEntity, WRDSHelper):
     self.ann_fdmt = IdxFdmtAnn.from_gvkeyx(self.gvkeyx)
     self.qrt_fdmt = IdxFdmtQrt.from_gvkeyx(self.gvkeyx)
     self.mth = IdxMth.from_gvkeyx(self.gvkeyx)
-    self.daily = IdxMth.from_gvkeyx(self.gvkeyx)
+    self.daily = IdxDaily.from_gvkeyx(self.gvkeyx)
 
   @staticmethod
   def from_name(conm):

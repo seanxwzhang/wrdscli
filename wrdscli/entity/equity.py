@@ -2,9 +2,10 @@
 import attr
 import pandas as pd
 from typing import List
+from functools import cached_property, lru_cache
 from wrdscli.entity.company import Company
 from wrdscli.entity.security import Security
-from wrdscli.entity.fdmt import Fdmt
+from wrdscli.entity.fdmt import Fdmt, FdmtAnn
 from wrdscli.entity.footnote import FootnoteA, FootnoteQ
 from wrdscli.entity.shortint import ShortInt
 from wrdscli.entity.secd import Secd
@@ -21,6 +22,7 @@ class Equity(WRDSHelper):
     company: Company
     securities: List[Security] = []
     fdmts: List[Fdmt] = []
+    fdmts_ann: List[FdmtAnn] = []
     afootnotes: List[FootnoteA] = []
     qfootnotes: List[FootnoteQ] = []
     shortints: List[ShortInt] = []
@@ -51,10 +53,12 @@ class Equity(WRDSHelper):
         estimates = Estimate.from_cusip(sec.cusip)
         actualeps = ActualEPS.from_cusip(sec.cusip)
         pricetargets = PriceTarget.from_cusip(sec.cusip)
+        fdmts_ann = FdmtAnn.from_gvkey(sec.gvkey)
         return Equity(
             company,
             securities,
             fdmts,
+            fdmts_ann,
             afootnotes,
             qfootnotes,
             shortints,
@@ -75,6 +79,10 @@ class Equity(WRDSHelper):
     @property
     def fdmts_pd(self):
         return self._make_df(self.fdmts)
+
+    @property
+    def fdmts_ann_pd(self):
+        return self._make_df(self.fdmts_ann)
 
     @property
     def afootnotes_pd(self):

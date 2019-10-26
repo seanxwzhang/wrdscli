@@ -14,7 +14,8 @@ setup(
         'psycopg2>=2.7.6',
         'attrs>=19.2.0',
         'influxdb>=5.2.3',
-        'pyyaml>=5.1.2'
+        'pyyaml>=5.1.2',
+        'cached-property~=1.5.1;python_version<"3.8"',
     ],
     python_requires='>=3.7.4',
     entry_points='''
