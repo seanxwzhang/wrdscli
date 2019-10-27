@@ -1,8 +1,15 @@
 import attr
 from typing import List
+from functools import lru_cache
 from wrdscli.common import get_logger
 from wrdscli.lib.base import WRDSEntity, WRDSHelper
 from wrdscli.entity.idx_fdmt import IdxFdmtAnn, IdxFdmtQrt, IdxMth, IdxDaily
+
+import sys
+if sys.version_info.minor < 8:
+    from cached_property import cached_property
+else:
+    from functools import cached_property
 
 logger = get_logger('index')
 
@@ -36,6 +43,7 @@ class Index(WRDSEntity, WRDSHelper):
     self.daily = IdxDaily.from_gvkeyx(self.gvkeyx)
 
   @staticmethod
+  @lru_cache(maxsize=128)
   def from_name(conm):
     res = super(Index, Index).from_attr(Index, 'conm', conm)
     if len(res) == 1:

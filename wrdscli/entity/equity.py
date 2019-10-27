@@ -2,7 +2,7 @@
 import attr
 import pandas as pd
 from typing import List
-from functools import cached_property, lru_cache
+from functools import lru_cache
 from wrdscli.entity.company import Company
 from wrdscli.entity.security import Security
 from wrdscli.entity.fdmt import Fdmt, FdmtAnn
@@ -14,6 +14,12 @@ from wrdscli.entity.actualeps import ActualEPS
 from wrdscli.entity.ptarget import PriceTarget
 from wrdscli.lib.base import WRDSHelper
 from wrdscli.common import get_logger
+
+import sys
+if sys.version_info.minor < 8:
+    from cached_property import cached_property
+else:
+    from functools import cached_property
 
 logger = get_logger('equity')
 
@@ -32,6 +38,7 @@ class Equity(WRDSHelper):
     pricetargets: List[PriceTarget] = []
 
     @staticmethod
+    @lru_cache(maxsize=128)
     def from_tic(tic):
         securities = Security.from_tic(tic)
         if not securities:
@@ -68,46 +75,46 @@ class Equity(WRDSHelper):
             pricetargets
             )
 
-    @property
+    @cached_property
     def company_pd(self):
         return self._make_df(self.company)
 
-    @property
+    @cached_property
     def securities_pd(self):
         return self._make_df(self.securities)
 
-    @property
+    @cached_property
     def fdmts_pd(self):
         return self._make_df(self.fdmts)
 
-    @property
+    @cached_property
     def fdmts_ann_pd(self):
         return self._make_df(self.fdmts_ann)
 
-    @property
+    @cached_property
     def afootnotes_pd(self):
         return self._make_df(self.afootnotes)
 
-    @property
+    @cached_property
     def qfootnotes_pd(self):
         return self._make_df(self.qfootnotes)
 
-    @property
+    @cached_property
     def shortints_pd(self):
         return self._make_df(self.shortints)
 
-    @property
+    @cached_property
     def secds_pd(self):
         return self._make_df(self.secds)
 
-    @property
+    @cached_property
     def estimates_pd(self):
         return self._make_df(self.estimates)
 
-    @property
+    @cached_property
     def actualeps_pd(self):
         return self._make_df(self.actualeps)
 
-    @property
+    @cached_property
     def pricetargets_pd(self):
         return self._make_df(self.pricetargets)
