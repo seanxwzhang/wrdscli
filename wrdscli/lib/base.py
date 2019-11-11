@@ -1,7 +1,9 @@
 '''
 Base Classes for WRDSCLI
 '''
+import asyncio
 import attr
+import concurrent.futures
 import logging
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -57,13 +59,14 @@ class WRDSEntity(ABC, Loggable):
     def execute(cls, sql):
         connection = cls.engine.connect()
         logger.info('Executing sql: {}'.format(sql))
-        res = connection.execute(text(sql))
+        res = connection.execute(text(sql)).fetchall()
         connection.close()
         return res
 
     @classmethod
-    def from_attr(cls, d_cls, attr, val, limit=None, exact=False):
+    async def from_attr(cls, d_cls, attr, val, limit=None, exact=False):
         res = []
+        loop = asyncio.get_running_loop()
         if isinstance(cls.table, list):  # pylint: disable=no-member
             tables = cls.table  # pylint: disable=no-member
         else:
@@ -75,9 +78,10 @@ class WRDSEntity(ABC, Loggable):
                 match_op = f'LIKE \'%{val}%\''
             sql = f'SELECT * from {cls.schema}.{table} WHERE {attr} {match_op}'  # pylint: disable=no-member
             sql += ';' if not limit else f' LIMIT {limit};'
-            res_proxy = cls.execute(sql)
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                rows = await loop.run_in_executor(pool, lambda : cls.execute(sql))
             res = []
-            for obj in [{column: value for column, value in row_proxy.items()} for row_proxy in res_proxy]:
+            for obj in [{column: value for column, value in row.items()} for row in rows]:
                 res.append(d_cls(**obj))
         return res
 

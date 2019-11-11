@@ -81,12 +81,12 @@ class IdxFdmtAnn(WRDSEntity):
 
 
   @staticmethod
-  def from_name(conm):
-    return super(IdxFdmtAnn, IdxFdmtAnn).from_attr(IdxFdmtAnn, 'conm', conm)
+  async def from_name(conm):
+    return await super(IdxFdmtAnn, IdxFdmtAnn).from_attr(IdxFdmtAnn, 'conm', conm)
 
   @staticmethod
-  def from_gvkeyx(gvkeyx):
-    return super(IdxFdmtAnn, IdxFdmtAnn).from_attr(IdxFdmtAnn, 'gvkeyx', gvkeyx, exact=True)
+  async def from_gvkeyx(gvkeyx):
+    return await super(IdxFdmtAnn, IdxFdmtAnn).from_attr(IdxFdmtAnn, 'gvkeyx', gvkeyx, exact=True)
 
 
 @attr.s(auto_attribs=True)
@@ -152,8 +152,8 @@ class IdxFdmtQrt(WRDSEntity):
   datadate : str = None  # Data Date - Index Quarterly
 
   @staticmethod
-  def from_gvkeyx(gvkeyx):
-    return super(IdxFdmtQrt, IdxFdmtQrt).from_attr(IdxFdmtQrt, 'gvkeyx', gvkeyx, exact=True)
+  async def from_gvkeyx(gvkeyx):
+    return await super(IdxFdmtQrt, IdxFdmtQrt).from_attr(IdxFdmtQrt, 'gvkeyx', gvkeyx, exact=True)
 
 
 @attr.s(auto_attribs=True)
@@ -183,8 +183,8 @@ class IdxMth(WRDSEntity):
   datadate : str = None  # Data Date - Index Monthly
 
   @staticmethod
-  def from_gvkeyx(gvkeyx):
-    return super(IdxMth, IdxMth).from_attr(IdxMth, 'gvkeyx', gvkeyx, exact=True)
+  async def from_gvkeyx(gvkeyx):
+    return await super(IdxMth, IdxMth).from_attr(IdxMth, 'gvkeyx', gvkeyx, exact=True)
 
 
 @attr.s(auto_attribs=True)
@@ -203,6 +203,6 @@ class IdxDaily(WRDSEntity):
   datadate : str = None  # Data Date - Index Daily
 
   @staticmethod
-  def from_gvkeyx(gvkeyx):
-    return super(IdxDaily, IdxDaily).from_attr(IdxDaily, 'gvkeyx', gvkeyx, exact=True)
+  async def from_gvkeyx(gvkeyx):
+    return await super(IdxDaily, IdxDaily).from_attr(IdxDaily, 'gvkeyx', gvkeyx, exact=True)
 

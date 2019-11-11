@@ -8,6 +8,7 @@ setup(
     author_email='seanxwzhang@gmail.com',
     packages=find_packages(),
     install_requires=[
+        'async_lru~=1.0',
         'pandas~=0.25.1',
         'sqlalchemy>=1.3',
         'click>=7.0',

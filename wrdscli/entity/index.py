@@ -1,6 +1,6 @@
 import attr
 from typing import List
-from functools import lru_cache
+from async_lru import alru_cache
 from wrdscli.common import get_logger
 from wrdscli.lib.base import WRDSEntity, WRDSHelper
 from wrdscli.entity.idx_fdmt import IdxFdmtAnn, IdxFdmtQrt, IdxMth, IdxDaily
@@ -43,9 +43,9 @@ class Index(WRDSEntity, WRDSHelper):
     self.daily = IdxDaily.from_gvkeyx(self.gvkeyx)
 
   @staticmethod
-  @lru_cache(maxsize=128)
-  def from_name(conm):
-    res = super(Index, Index).from_attr(Index, 'conm', conm)
+  @alru_cache(maxsize=128)
+  async def from_name(conm):
+    res = await super(Index, Index).from_attr(Index, 'conm', conm)
     if len(res) == 1:
       res[0]._initialize()
       return res[0]
@@ -56,18 +56,18 @@ class Index(WRDSEntity, WRDSHelper):
     else:
       logger.error(f'Found 0 indices with name {conm}')
 
-  @property
+  @cached_property
   def ann_fdmt_pd(self):
     return self._make_df(self.ann_fdmt)
 
-  @property
+  @cached_property
   def qrt_fdmt_pd(self):
     return self._make_df(self.qrt_fdmt)
 
-  @property
+  @cached_property
   def mth_pd(self):
     return self._make_df(self.mth)
 
-  @property
+  @cached_property
   def daily_pd(self):
     return self._make_df(self.daily)
