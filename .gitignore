@@ -4,3 +4,4 @@ wrdscli/**/*.ini
 bazel-*
 *egg-info
 penv
+.ipynb_checkpoints

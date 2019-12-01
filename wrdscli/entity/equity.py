@@ -37,6 +37,7 @@ class Equity(WRDSHelper):
   estimates: List[Estimate] = []
   actualeps: List[ActualEPS] = []
   pricetargets: List[PriceTarget] = []
+  main_tic: str = None
 
   @staticmethod
   @alru_cache(maxsize=128)
@@ -99,7 +100,8 @@ class Equity(WRDSHelper):
       secds,
       estimates,
       actualeps,
-      pricetargets
+      pricetargets,
+      sec.tic
     )
 
   @cached_property

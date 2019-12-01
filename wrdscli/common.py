@@ -34,7 +34,7 @@ def get_wrds_engine():
     pw = config[section_name]['PGPASS']
     host = config[section_name]['PGHOST']
     db = config[section_name]['PGDATABASE']
-    return create_engine(f'postgresql://{user}:{pw}@{host}/{db}', pool_size=20, max_overflow=10, connect_args={'connect_timeout': 60})
+    return create_engine(f'postgresql://{user}:{pw}@{host}/{db}', pool_size=50, max_overflow=10, connect_args={'connect_timeout': 60})
 
 def open_wp(file_path):
     directory = path.dirname(file_path)

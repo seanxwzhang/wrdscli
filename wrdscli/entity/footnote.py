@@ -1676,6 +1676,7 @@ class FootnoteQ(WRDSEntity):
   xopty_fn : str = None  # Implied Option Expense Footnote
   xrdy_fn : str = None  # Research and Development Expense Footnote
   xsgay_fn1 : str = None  # Selling, General and Administrative Expenses Footnote
+  uceqq_fn : str = None  #Common Equity Quarterly - Footnote
 
   @staticmethod
   async def from_gvkey(gvkey):
